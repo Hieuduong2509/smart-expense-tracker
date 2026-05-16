@@ -1,66 +1,154 @@
 # Smart Expense Tracker
 
-> An AI-powered full-stack expense tracking platform for seamless budget management, automated receipt OCR, and smart financial insights.
+> A modern, AI-powered microservices platform for personal finance management.
 
-[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2014-000000?logo=next.js)](https://nextjs.org/)
-[![Node.js](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?logo=nodedotjs)](https://nodejs.org/)
-[![FastAPI](https://img.shields.io/badge/AI_Service-Python%20FastAPI-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
-[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-required-blue?logo=docker)](https://www.docker.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-frontend-black?logo=next.js)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-ai--service-green?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Configuration](#configuration)
-- [Running the Application](#running-the-application)
-- [Default Account](#default-account)
-- [Accessing the App](#accessing-the-app)
-- [Notes](#notes)
+- [System Requirements](#system-requirements)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Running the System](#running-the-system)
+- [Accessing the Platform](#accessing-the-platform)
+- [Features](#features)
+- [Port Reference](#port-reference)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
 ## Overview
 
-Smart Expense Tracker is a modern financial management platform that helps users track their daily spending against monthly goals. The system follows a clean separation of concerns within a **Turborepo Monorepo** structure. It features a Next.js frontend, a robust Node.js core API handling a strict "Math Engine", and a dedicated Python FastAPI microservice that leverages Tesseract OCR and Anthropic's Claude API to process receipts and generate Tier-3 AI financial advice.
+Smart Expense Tracker is a production-ready financial management platform that leverages AI to help users track spending, manage budgets, and gain financial insights. The architecture follows a modern monorepo approach using Turborepo, orchestrating multiple services including a Next.js frontend, a Node.js API, and a Python-based AI service for OCR and financial advisory.
 
 ---
 
-## Tech Stack
+## System Requirements
 
-| Layer | Technology |
+| Dependency | Notes |
 |---|---|
-| Frontend | Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui |
-| Core Backend | Node.js, Express.js, Prisma ORM, BullMQ |
-| AI Microservice | Python, FastAPI, Tesseract OCR, Anthropic Claude |
-| Database & Cache | PostgreSQL, Redis |
-| Workspace | Turborepo (Monorepo) |
+| Windows 10 / 11 | PowerShell recommended |
+| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Required for database and service orchestration |
+| [Node.js 18+](https://nodejs.org/) | Required for frontend and API development |
+| [Python 3.10+](https://www.python.org/) | Required for the AI service |
+| [Turbo](https://turbo.build/repo/docs/installing) | `npm install -g turbo` |
 
 ---
 
-## Prerequisites
+## Project Structure
 
-Ensure the following are installed and running on your machine before proceeding:
+```
+.
+├── docker-compose.yml              # Docker Compose — full stack orchestration
+├── turbo.json                      # Turborepo configuration
+├── apps/                           # Main applications
+│   ├── web/                        # Next.js Dashboard (Port 3000)
+│   ├── api/                        # Node.js Backend API (Port 4000)
+│   ├── ai-service/                 # Python AI Service (Port 5000)
+│   └── mobile/                     # React Native Mobile App
+├── packages/                       # Shared internal packages
+│   ├── ui/                         # Shared Shadcn UI components
+│   ├── config/                     # Shared ESLint/TSConfig
+│   └── shared-types/               # Shared TypeScript interfaces
+├── deploy/                         # Deployment configurations
+│   ├── docker/                     # Dockerfiles and docker-related configs
+│   └── k8s/                        # Kubernetes manifests (optional)
+└── scripts/                        # Automation scripts (planned)
+```
 
-| Tool | Purpose |
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```powershell
+git clone <repository-url>
+cd smart-expense-tracker
+```
+
+### 2. Install Dependencies
+
+Install all dependencies for the entire monorepo:
+
+```powershell
+npm install
+```
+
+### 3. Environment Configuration
+
+Copy the `.env.example` files in each app directory to `.env` and fill in the required variables (Database URLs, API Keys, etc.).
+
+---
+
+## Running the System
+
+### Local Development (Hot Reloading)
+
+Start all services simultaneously using Turborepo:
+
+```powershell
+npm run dev
+```
+
+### Docker Startup (Production-like)
+
+Start the full stack including databases (PostgreSQL, Redis):
+
+```powershell
+docker-compose up -d
+```
+
+---
+
+## Features
+
+- **AI-Powered OCR**: Scan receipts and automatically extract merchant, date, and amount.
+- **Dynamic Budgeting**: Real-time recalculation of daily budgets based on spending habits.
+- **Smart Insights**: Tier 3 AI financial advisor providing actionable spending tips.
+- **Visual Analytics**: Interactive charts and progress tracking for monthly goals.
+- **Multi-Platform**: Seamless experience across Web and Mobile.
+
+---
+
+## Accessing the Platform
+
+| Interface | URL |
 |---|---|
-| [Visual Studio Code](https://code.visualstudio.com/) | Recommended IDE |
-| [Node.js 20+](https://nodejs.org/) & npm | Frontend & Core API runtime |
-| [Python 3.10+](https://www.python.org/) | AI Microservice runtime |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | System-level dependency for receipt scanning |
-| PostgreSQL | Database server (must be running on port `5432`) |
-| Redis | In-memory store for BullMQ (must be running on port `6379`) |
+| **Web Dashboard** | `http://localhost:3000` |
+| **Backend API Docs** | `http://localhost:4000/docs` |
+| **AI Service Docs** | `http://localhost:5000/docs` |
+| **Prisma Studio** | `npx prisma studio` (within apps/api) |
 
 ---
 
-## Configuration
+## Port Reference
 
-Before starting the applications, create the `.env` files in their respective directories.
+| Service | Port |
+|---|---|
+| Web Frontend | `3000` |
+| Backend API | `4000` |
+| AI Service | `5000` |
+| PostgreSQL | `5432` |
+| Redis | `6379` |
 
-**1. Core Backend (`apps/api/.env`)**
-```env
-DATABASE_URL="postgresql://postgres:your_password@localhost:5432/smart_expense_db?schema=public"
-REDIS_URL="redis://localhost:6379"
-AI_SERVICE_URL="http://localhost:8000"
+---
+
+## Troubleshooting
+
+| Symptom | Resolution |
+|---|---|
+| **Prisma connection failed** | Ensure PostgreSQL container is running and `.env` has the correct `DATABASE_URL`. |
+| **Turbo command not found** | Run `npm install -g turbo` or use `npx turbo`. |
+| **Module not found in Web** | Ensure `packages/ui` and other packages are built: `npm run build`. |
+| **AI Service fails to start** | Check if Python dependencies are installed: `pip install -r apps/ai-service/requirements.txt`. |
+
+---
+
+*Smart Expense Tracker — Transforming how you manage your wealth.*
